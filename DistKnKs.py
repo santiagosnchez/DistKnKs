@@ -30,7 +30,7 @@ def main():
     args = parser.parse_args()
     gc = get_genetic_codes(args.codon_table)
     cc = codon_block_counts(gc)
-    print "file,Kn_K80,Ks_K80,Kn_JC,Ks_JC"
+    print "file,N,S,Kn_K80,Ks_K80,Kn_JC,Ks_JC"
     for f in args.file:
         file = f.split("/")[-1]
         file = re.sub("\.[fF][aA][sS]{0,1}[tT]{0,1}[aA]{0,1}$","",file)
@@ -38,8 +38,8 @@ def main():
         if len(d.keys()) != 2:
             parser.error("Only two sequences per file are allowed.")
         var, total_syn, total = do_counts(d, cc)
-        kn_k2p,ks_k2p,kn_jc,ks_jc = get_knks(var, total_syn, total)
-        print "{0},{1:5f},{2:5f},{3:5f},{4:5f}".format(file,kn_k2p,ks_k2p,kn_jc,ks_jc)
+        N,S,kn_k2p,ks_k2p,kn_jc,ks_jc = get_knks(var, total_syn, total)
+        print "{0},{1},{2},{3:5f},{4:5f},{5:5f},{6:5f}".format(file,N,S,kn_k2p,ks_k2p,kn_jc,ks_jc)
 
 # functions
 
@@ -172,7 +172,8 @@ def do_counts(d, cc):
                                 diff[1][1] == 'ts':
                                     var['S'][diff[1][1]] += 1
                                     var['N'][diff[0][1]] += 1
-                                else:
+                                else: # there is a issue here when M1/W1 and R4/L4 happen. There should be +1 syn and +1 nonsyn.
+                                      # Difficult to extend it to all genetic codes.
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
                             elif diff[-1] == 3:
@@ -188,7 +189,6 @@ def do_counts(d, cc):
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
                                 else:
-                                    print cod[0]
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
                                     var['N'][diff[2][1]] += 1
@@ -206,7 +206,7 @@ def get_knks(var, total_syn, total):
     ks_k2p = -0.5 * math.log((1-(2*Ps)-Qs)*math.sqrt(1-(2*Qs)))
     kn_jc = -(3./4.) * math.log(1-((4./3.)*pn))
     ks_jc = -(3./4.) * math.log(1-((4./3.)*ps))
-    return kn_k2p,ks_k2p,kn_jc,ks_jc
+    return sum(var['N'].values()),sum(var['S'].values()),kn_k2p,ks_k2p,kn_jc,ks_jc
 
 if __name__ == "__main__":
     main()
