@@ -41,6 +41,7 @@ def main():
         kn_k2p,ks_k2p,kn_jc,ks_jc = get_knks(var, total_syn, total)
         print "{0},{1:5f},{2:5f},{3:5f},{4:5f}".format(file,kn_k2p,ks_k2p,kn_jc,ks_jc)
 
+# functions
 
 def readfasta(file):
     data = {}
@@ -187,6 +188,7 @@ def do_counts(d, cc):
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
                                 else:
+                                    print cod[0]
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
                                     var['N'][diff[2][1]] += 1
