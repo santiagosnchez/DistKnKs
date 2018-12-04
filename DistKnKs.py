@@ -25,7 +25,7 @@ def main():
     '--file', '-f', nargs="*", type=str,
     help='one or more alignments in FASTA format.')
     parser.add_argument(
-    '--codon_table', '-c', nargs="*", type=str, default="1",
+    '--codon_table', '-c', type=str, default="1",
     help='the codon table number (default is 1, which stands for the standard genetic code.')
     args = parser.parse_args()
     gc = get_genetic_codes(args.codon_table)
