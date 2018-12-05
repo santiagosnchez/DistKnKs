@@ -195,17 +195,19 @@ def do_counts(d, cc):
     return var, total_syn, total
 
 def get_knks(var, total_syn, total):
-    print var
-    print total_syn
-    print total
     total_nonsyn = total - total_syn
     Pn = float(var['N']['ts'])/total_nonsyn
     Qn = float(var['N']['tv'])/total_nonsyn
     Ps = float(var['S']['ts'])/total_syn
     Qs = float(var['S']['tv'])/total_syn
     pn = float(sum(var['N'].values()))/total_nonsyn 
-    ps = float(sum(var['S'].values()))/total_syn 
-    kn_k2p = -0.5 * math.log((1-(2*Pn)-Qn)*math.sqrt(1-(2*Qn)))
+    ps = float(sum(var['S'].values()))/total_syn
+    try:
+        kn_k2p = -0.5 * math.log((1-(2*Pn)-Qn)*math.sqrt(1-(2*Qn)))
+    except ValueError:
+        kn_k2p = inf
+    try:
+         
     ks_k2p = -0.5 * math.log((1-(2*Ps)-Qs)*math.sqrt(1-(2*Qs)))
     kn_jc = -(3./4.) * math.log(1-((4./3.)*pn))
     ks_jc = -(3./4.) * math.log(1-((4./3.)*ps))
