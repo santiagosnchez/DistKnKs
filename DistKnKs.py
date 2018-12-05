@@ -206,7 +206,7 @@ def get_knks(var, total_syn, total):
     ks_k2p = -0.5 * math.log((1-(2*Ps)-Qs)*math.sqrt(1-(2*Qs)))
     kn_jc = -(3./4.) * math.log(1-((4./3.)*pn))
     ks_jc = -(3./4.) * math.log(1-((4./3.)*ps))
-    return sum(var['N'].values()),sum(var['S'].values()),kn_k2p,ks_k2p,kn_jc,ks_jc
+    return sum(var['N'].values()),sum(var['S'].values()),abs(kn_k2p),abs(ks_k2p),abs(kn_jc),abs(ks_jc)
 
 if __name__ == "__main__":
     main()
