@@ -149,7 +149,7 @@ def do_counts(d, cc):
                                 var['S'][diff[0][1]] += 1
                                 var['S'][diff[1][1]] += 1
                                 total_syn += 2
-                            elif gc[cod[0]][0] == 'S':
+                            elif cc[cod[0]][0] == 'S':
                                 if diff[-1] == 2:
                                     var['N'][diff[0][1]] += 1
                                     var['N'][diff[1][1]] += 1
