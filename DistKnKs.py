@@ -195,6 +195,9 @@ def do_counts(d, cc):
     return var, total_syn, total
 
 def get_knks(var, total_syn, total):
+    print var
+    print total_syn
+    print total
     total_nonsyn = total - total_syn
     Pn = float(var['N']['ts'])/total_nonsyn
     Qn = float(var['N']['tv'])/total_nonsyn
