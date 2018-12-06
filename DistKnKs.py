@@ -194,6 +194,36 @@ def do_counts(d, cc):
                                     var['N'][diff[2][1]] += 1
     return var, total_syn, total
 
+def check_exceptions(p,d):
+    if d == "jc":
+        try:
+            kn_jc = -(3./4.) * math.log(1-((4./3.)*p["n"]))
+        except ValueError:
+            kn_jc = "Inf"
+        else:
+            kn_jc = round(abs(kn_jc),5)
+        try:
+            ks_jc = -(3./4.) * math.log(1-((4./3.)*p["s"]))
+        except ValueError:
+            ks_jc = "Inf"
+        else:
+            ks_jc = round(abs(ks_jc),)
+        kn_jc,ks_jc
+    elif d == "k2p":
+        try:
+            kn_k2p = -0.5 * math.log((1-(2*p["n"]["P"])-p["n"]["Q"])*math.sqrt(1-(2*p["n"]["Q"])))       
+        except ValueError:
+            kn_k2p = "Inf"
+        else:
+            kn_k2p = round(abs(k2p),5)
+        try:
+            ks_k2p = -0.5 * math.log((1-(2*p["s"]["P"])-p["s"]["Q"])*math.sqrt(1-(2*p["s"]["Q"])))
+        except ValueError:
+            ks_k2p = "Inf"
+        else:
+            ks_k2p = round(abs(ks_k2p),5)
+        return kn_k2p,ks_k2p
+
 def get_knks(var, total_syn, total):
     total_nonsyn = total - total_syn
     Pn = float(var['N']['ts'])/total_nonsyn
@@ -202,16 +232,9 @@ def get_knks(var, total_syn, total):
     Qs = float(var['S']['tv'])/total_syn
     pn = float(sum(var['N'].values()))/total_nonsyn 
     ps = float(sum(var['S'].values()))/total_syn
-    try:
-        kn_k2p = -0.5 * math.log((1-(2*Pn)-Qn)*math.sqrt(1-(2*Qn)))
-    except ValueError:
-        kn_k2p = inf
-    try:
-         
-    ks_k2p = -0.5 * math.log((1-(2*Ps)-Qs)*math.sqrt(1-(2*Qs)))
-    kn_jc = -(3./4.) * math.log(1-((4./3.)*pn))
-    ks_jc = -(3./4.) * math.log(1-((4./3.)*ps))
-    return sum(var['N'].values()),sum(var['S'].values()),abs(kn_k2p),abs(ks_k2p),abs(kn_jc),abs(ks_jc)
+    kn_jc,ks_jc = check_exceptions({"n":pn,"s":ps},"jc")
+    kn_k2p,ks_k2p = check_exceptions({"n":{"P":Pn,"Q":Qn},"s":{"P":Ps,"Q":Qs}}, "k2p")
+    return sum(var['N'].values()),sum(var['S'].values()),kn_k2p,ks_k2p,kn_jc,ks_jc
 
 if __name__ == "__main__":
     main()
