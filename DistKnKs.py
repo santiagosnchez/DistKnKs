@@ -30,7 +30,7 @@ def main():
     args = parser.parse_args()
     gc = get_genetic_codes(args.codon_table)
     cc = codon_block_counts(gc)
-    print "file,N,S,Kn_K80,Ks_K80,Kn_JC,Ks_JC"
+    print "file,N,S,total_N,total_S,Kn_K80,Ks_K80,Kn_JC,Ks_JC"
     for f in args.file:
         file = f.split("/")[-1]
         file = re.sub("\.[fF][aA][sS]{0,1}[tT]{0,1}[aA]{0,1}$","",file)
@@ -38,8 +38,8 @@ def main():
         if len(d.keys()) != 2:
             parser.error("Only two sequences per file are allowed.")
         var, total_syn, total = do_counts(d, cc)
-        N,S,kn_k2p,ks_k2p,kn_jc,ks_jc = get_knks(var, total_syn, total)
-        print "{0},{1},{2},{3:5f},{4:5f},{5:5f},{6:5f}".format(file,N,S,kn_k2p,ks_k2p,kn_jc,ks_jc)
+        N,S,total_nonsyn,total_syn,kn_k2p,ks_k2p,kn_jc,ks_jc = get_knks(var, total_syn, total)
+        print "{0},{1},{2},{3},{4},{5},{6},{7},{8}".format(file,N,S,total_nonsyn,total_syn,kn_k2p,ks_k2p,kn_jc,ks_jc)
 
 # functions
 
@@ -208,14 +208,14 @@ def check_exceptions(p,d):
             ks_jc = "Inf"
         else:
             ks_jc = round(abs(ks_jc),)
-        kn_jc,ks_jc
+        return kn_jc,ks_jc
     elif d == "k2p":
         try:
             kn_k2p = -0.5 * math.log((1-(2*p["n"]["P"])-p["n"]["Q"])*math.sqrt(1-(2*p["n"]["Q"])))       
         except ValueError:
             kn_k2p = "Inf"
         else:
-            kn_k2p = round(abs(k2p),5)
+            kn_k2p = round(abs(kn_k2p),5)
         try:
             ks_k2p = -0.5 * math.log((1-(2*p["s"]["P"])-p["s"]["Q"])*math.sqrt(1-(2*p["s"]["Q"])))
         except ValueError:
@@ -233,8 +233,8 @@ def get_knks(var, total_syn, total):
     pn = float(sum(var['N'].values()))/total_nonsyn 
     ps = float(sum(var['S'].values()))/total_syn
     kn_jc,ks_jc = check_exceptions({"n":pn,"s":ps},"jc")
-    kn_k2p,ks_k2p = check_exceptions({"n":{"P":Pn,"Q":Qn},"s":{"P":Ps,"Q":Qs}}, "k2p")
-    return sum(var['N'].values()),sum(var['S'].values()),kn_k2p,ks_k2p,kn_jc,ks_jc
+    kn_k2p,ks_k2p = check_exceptions({"n":{"P":Pn,"Q":Qn},"s":{"P":Ps,"Q":Qs}},"k2p")
+    return sum(var['N'].values()),sum(var['S'].values()),total_nonsyn,total_syn,kn_k2p,ks_k2p,kn_jc,ks_jc
 
 if __name__ == "__main__":
     main()
